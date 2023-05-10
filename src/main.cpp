@@ -3,57 +3,31 @@
 #include <cmath>
 #include <chrono>
 #include <iostream>
+#include <trail.hpp>
 
-int cur_time(std::chrono::time_point<std::chrono::steady_clock> start)
-{
-    auto end = std::chrono::steady_clock::now();
-    return std::chrono::duration_cast<std::chrono::milliseconds>(start-end).count();
-}
+float a1 = 150;
+float a2 = 200;
 
-// sf::Vector2f sincurve(float x, float w, int t)
-// {
-//     return sf::Vector2f(i, 200+70*sin((float)i/50 -w*t));
-// } 
+float w1 = 0.08;
+float w2 = 0.16;
 
-// sf::Vector2f invsincurve(float x, float w, int t)
-// {
-//     return sf::Vector2f(i, 200+70*sin((float)i/50 -w*t));
-// } 
+float f1 = 0;
+float f2 = 0.3;
+
+//  clock.getElapsedTime().asMilliseconds();
+
+Drawer D;
+Trail T;
 
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(500, 500), "SFML works!");
     
-    window.clear(sf::Color::Black);
-    
     sf::Vertex sine[1000];
-
-    int t;
-    float w;
-    w = 0.08;
 
     sf::Clock clock;
 
-    t = 0;
-
-    while(t <= 5000)
-    {
-        sf::sleep(sf::milliseconds(70));
-        t = clock.getElapsedTime().asMilliseconds();
-        for (int i = 0; i < 500; i++)
-        {
-            sine[i] = sf::Vertex(sf::Vector2f(i, 200+70*sin((float)i/50 -w*t)), sf::Color(250 - (float)i/2, 0, (float)i/2));
-        }
-        window.clear(sf::Color::Black);
-        window.draw(sine, 500, sf::Lines);
-        window.display();        
-    }
-
-
-    window.clear(sf::Color::Black);
-    window.draw(sine, 500, sf::Lines);
-
-    window.display();
+    window.clear(sf::Color::Black);    
 
     while (window.isOpen())
     {
@@ -65,10 +39,16 @@ int main()
             {
                 window.close();
             }
-        }
-
-
+        }        
         
+        window.clear(sf::Color::Black);
+
+        D.update(a1, w1, f1, a2, w2, f2, clock.getElapsedTime().asMilliseconds());
+        T.update_vertex(D);
+        T.draw(window);
+        T.update_trail(clock.getElapsedTime().asMilliseconds());
+
+        window.display();                
     }
 
     
